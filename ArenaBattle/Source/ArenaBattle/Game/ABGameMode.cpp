@@ -4,10 +4,11 @@
 #include "Game/ABGameMode.h"
 #include "Player/ABPlayerController.h"
 #include "ABGameMode.h"
+#include "Character/ABCharacterPlayer.h"
 
 AABGameMode::AABGameMode()
 {
 	PlayerControllerClass = AABPlayerController::StaticClass();
 
-
+	DefaultPawnClass = AABCharacterPlayer::StaticClass();
 }

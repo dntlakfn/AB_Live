@@ -11,6 +11,12 @@ AABCharacterBase::AABCharacterBase()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//Pawn
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+
+
 	//Capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.0f, 96.0f);
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Pawn"));
@@ -18,6 +24,8 @@ AABCharacterBase::AABCharacterBase()
 	//Movement
 	GetCharacterMovement()->JumpZVelocity = 700.0f;
 	GetCharacterMovement()->MaxWalkSpeed = 500.0f;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
 
 
 	//Mesh

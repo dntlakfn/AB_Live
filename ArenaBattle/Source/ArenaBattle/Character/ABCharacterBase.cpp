@@ -38,6 +38,14 @@ AABCharacterBase::AABCharacterBase()
 
 	GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -100.0f));
 	GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
+
+	// Animation
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceRef(TEXT("/Game/Animation/ABP_ABCharacter.ABP_ABCharacter"));
+	if (AnimInstanceRef.Succeeded()) 
+	{
+		GetMesh()->SetAnimInstanceClass(AnimInstanceRef.Class);
+	}
 }
 
 // Called when the game starts or when spawned

@@ -37,6 +37,7 @@ protected:
 public:
 	void Look(const FInputActionValue& Value);
 	void Move(const FInputActionValue& Value);
+	void Attack(const FInputActionValue& Value);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -50,6 +51,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<class UInputAction> IAMove;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<class UInputAction> IAAttack;
 #pragma endregion
 };
 

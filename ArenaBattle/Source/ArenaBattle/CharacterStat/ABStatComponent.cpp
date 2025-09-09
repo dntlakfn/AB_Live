@@ -3,10 +3,13 @@
 
 #include "CharacterStat/ABStatComponent.h"
 #include "Singleton/ABGameSingleton.h"
+#include "Character/ABCharacterBase.h"
 
 // Sets default values for this component's properties
 UABStatComponent::UABStatComponent()
 {
+	bWantsInitializeComponent = true;
+
 	CurrentLevel = 1;
 }
 
@@ -17,18 +20,20 @@ void UABStatComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+	SetLevel(CurrentLevel);
+	SetHp(BaseStat.MaxHp);
 }
 
 void UABStatComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
 	
-	SetLevel(CurrentLevel);
-	SetHp(BaseStat.MaxHp);
+	
 }
 
-void UABStatComponent::SetLevel(int32 NewLevel) 
+
+
+void UABStatComponent::SetLevel(int32 NewLevel)
 {
 	CurrentLevel = FMath::Clamp(NewLevel, 1, UABGameSingleton::Get().GetCharacterMaxLevel());
 	SetBaseStat(UABGameSingleton::Get().GetCharacterStat(CurrentLevel));
@@ -37,7 +42,7 @@ void UABStatComponent::SetLevel(int32 NewLevel)
 void UABStatComponent::SetHp(int32 NewHp)
 {
 	CurrentHp = FMath::Clamp(NewHp, 0.0f, GetTotalStat().MaxHp);
-
+	OnHpChanged.Broadcast(CurrentHp);
 }
 
 float UABStatComponent::ApplyDamage(float InDamage)
@@ -49,6 +54,7 @@ float UABStatComponent::ApplyDamage(float InDamage)
 	if (CurrentHp <= KINDA_SMALL_NUMBER)
 	{
 		// Dead
+		OnHpZero.Broadcast();
 	}
 	return ActualDamage;
 }

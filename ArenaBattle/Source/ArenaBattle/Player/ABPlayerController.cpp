@@ -10,3 +10,9 @@ void AABPlayerController::BeginPlay()
 	FInputModeGameOnly GameOnlyInputMode;
 	SetInputMode(GameOnlyInputMode);
 }
+
+void AABPlayerController::OnPossess(APawn* aPawn)
+{
+	Super::OnPossess(aPawn);
+	AddPitchInput(15.0f);
+}

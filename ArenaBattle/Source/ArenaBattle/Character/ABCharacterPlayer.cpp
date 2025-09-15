@@ -6,6 +6,9 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "CharacterData/ABCharacterStat.h"
+#include "CharacterStat/ABStatComponent.h"
+#include "UI/ABPlayerHUDWidget.h"
 
 
 AABCharacterPlayer::AABCharacterPlayer()
@@ -18,6 +21,12 @@ AABCharacterPlayer::AABCharacterPlayer()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(SpringArm);
 	FollowCamera->bUsePawnControlRotation = false;
+
+	static ConstructorHelpers::FClassFinder<UABPlayerHUDWidget> ABPlayerHUDWidgetAssetRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/UI/WBP_PlayerHUD.WBP_PlayerHUD_C'"));
+	if(ABPlayerHUDWidgetAssetRef.Succeeded())
+	{
+		ABPlayerHUDWidgetAsset = ABPlayerHUDWidgetAssetRef.Class;
+	}
 }
 
 void AABCharacterPlayer::BeginPlay()
@@ -30,6 +39,22 @@ void AABCharacterPlayer::BeginPlay()
 	if(Subsystem)
 	{
 		Subsystem->AddMappingContext(IMCDefault, 0);
+	}
+
+	ABPlayerHUDWidget = CreateWidget<UABPlayerHUDWidget>(PlayerController, ABPlayerHUDWidgetAsset);
+	if(ABPlayerHUDWidget)
+	{
+		ABPlayerHUDWidget->AddToViewport();
+		
+	}
+	if(ABPlayerHUDWidget && StatComponent)
+	{
+		ABPlayerHUDWidget->UpdateHp(StatComponent->GetTotalStat().MaxHp);
+		ABPlayerHUDWidget->UpdateStat(StatComponent->GetBaseStat(), StatComponent->GetModifierStat());
+
+		StatComponent->OnHpChanged.AddUObject(ABPlayerHUDWidget, &UABPlayerHUDWidget::UpdateHp);
+		StatComponent->OnStatChanged.AddUObject(ABPlayerHUDWidget, &UABPlayerHUDWidget::UpdateStat);
+		
 	}
 }
 

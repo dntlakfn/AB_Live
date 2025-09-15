@@ -10,6 +10,7 @@ UABHpBarWidget::UABHpBarWidget(const FObjectInitializer& ObjectInitializer) : Su
 	CurrentHp = 0.0f;
 }
 
+
 void UABHpBarWidget::UpdateStat(const FABCharacterStat& BaseStat, const FABCharacterStat& ModifierStat)
 {
 	MaxHp = (BaseStat + ModifierStat).MaxHp;

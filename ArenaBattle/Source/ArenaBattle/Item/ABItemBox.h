@@ -14,7 +14,12 @@ class ARENABATTLE_API AABItemBox : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AABItemBox();
+public:
+	UFUNCTION()
+	void OnItemBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION()
+	void OnEffectFinished(class UParticleSystemComponent* PSystem);
 public:
 	TObjectPtr<class UBoxComponent> GetTriggerBox() { return TriggerBox; }
 protected:
@@ -26,6 +31,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UParticleSystemComponent> Effect;
+
+	UPROPERTY(EditAnywhere, Category = Item)
+	TObjectPtr<class UABItemData> ITemData;
+
 public:
 
 

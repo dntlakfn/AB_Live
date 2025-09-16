@@ -5,12 +5,18 @@
 #include "CoreMinimal.h"
 #include "Character/ABCharacterBase.h"
 #include "InputActionValue.h"
+#include "Interface/ABItemInterface.h"
+#include "Item/ABItemData.h"
+
 #include "ABCharacterPlayer.generated.h"
+
+DECLARE_DELEGATE_OneParam(FOnTakeItemDelegate, class UABItemData* /*InItemData*/)
+
 /**
  * 
  */
 UCLASS()
-class ARENABATTLE_API AABCharacterPlayer : public AABCharacterBase
+class ARENABATTLE_API AABCharacterPlayer : public AABCharacterBase, public IABItemInterface
 {
 	GENERATED_BODY()
 	
@@ -24,6 +30,17 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+public:
+	// Item Section
+	virtual void TakeItem(class UABItemData* ItemData) override;
+	void DrinkPotion(UABItemData* InItemData);
+	void ReadScroll(UABItemData* InItemData);
+	void EquipWeapon(UABItemData* InItemData);
+	
+
+protected:
+	TMap<EItemType, FOnTakeItemDelegate> TakeItemActions;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HUD)

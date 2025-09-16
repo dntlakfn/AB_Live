@@ -9,6 +9,9 @@
 #include "CharacterData/ABCharacterStat.h"
 #include "CharacterStat/ABStatComponent.h"
 #include "UI/ABPlayerHUDWidget.h"
+#include "Item/ABPotionItemData.h"
+#include "Item/ABScrollItemData.h"
+#include "Item/ABWeaponItemData.h"
 
 
 AABCharacterPlayer::AABCharacterPlayer()
@@ -27,6 +30,10 @@ AABCharacterPlayer::AABCharacterPlayer()
 	{
 		ABPlayerHUDWidgetAsset = ABPlayerHUDWidgetAssetRef.Class;
 	}
+
+	TakeItemActions.Add(EItemType::Potion, FOnTakeItemDelegate::CreateUObject(this, &AABCharacterPlayer::DrinkPotion));
+	TakeItemActions.Add(EItemType::Scroll, FOnTakeItemDelegate::CreateUObject(this, &AABCharacterPlayer::ReadScroll));
+	TakeItemActions.Add(EItemType::Weapon, FOnTakeItemDelegate::CreateUObject(this, &AABCharacterPlayer::EquipWeapon));
 }
 
 void AABCharacterPlayer::BeginPlay()
@@ -75,6 +82,49 @@ void AABCharacterPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	EnhancedInputComponent->BindAction(IAMove, ETriggerEvent::Triggered, this, &AABCharacterPlayer::Move);
 	EnhancedInputComponent->BindAction(IAAttack, ETriggerEvent::Triggered, this, &AABCharacterPlayer::Attack);
 
+}
+
+void AABCharacterPlayer::TakeItem(UABItemData* ItemData)
+{
+	if (ItemData)
+	{
+		TakeItemActions[ItemData->Type].ExecuteIfBound(ItemData);
+	}
+}
+
+void AABCharacterPlayer::DrinkPotion(UABItemData* InItemData)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Magenta, TEXT("Drink Potion"));
+
+	UABPotionItemData* PotionItemData = Cast<UABPotionItemData>(InItemData);
+	if (PotionItemData)
+	{
+		if(StatComponent)
+		{
+			StatComponent->AddHp(PotionItemData->HealAmount);
+		}
+	}
+}
+
+void AABCharacterPlayer::ReadScroll(UABItemData* InItemData)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Magenta, TEXT("Read Scroll"));
+
+	UABScrollItemData* ScrollItemData = Cast<UABScrollItemData>(InItemData);
+	if (ScrollItemData)
+	{
+		if (StatComponent)
+		{
+			StatComponent->AddBaseStat(ScrollItemData->BaseStat);
+		}
+	}
+}
+
+void AABCharacterPlayer::EquipWeapon(UABItemData* InItemData)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Magenta, TEXT("Equip Weapon"));
+
+	
 }
 
 void AABCharacterPlayer::Look(const FInputActionValue& Value)

@@ -42,6 +42,9 @@ public:
 protected:
 	TMap<EItemType, FOnTakeItemDelegate> TakeItemActions;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<class USkeletalMeshComponent> WeaponMesh;
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HUD)
 	TSubclassOf<class UABPlayerHUDWidget> ABPlayerHUDWidgetAsset;

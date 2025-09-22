@@ -34,6 +34,10 @@ AABCharacterPlayer::AABCharacterPlayer()
 	TakeItemActions.Add(EItemType::Potion, FOnTakeItemDelegate::CreateUObject(this, &AABCharacterPlayer::DrinkPotion));
 	TakeItemActions.Add(EItemType::Scroll, FOnTakeItemDelegate::CreateUObject(this, &AABCharacterPlayer::ReadScroll));
 	TakeItemActions.Add(EItemType::Weapon, FOnTakeItemDelegate::CreateUObject(this, &AABCharacterPlayer::EquipWeapon));
+
+	// WeaponMesh Component
+	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
+	WeaponMesh->SetupAttachment(GetMesh(), TEXT("hand_rSocket"));
 }
 
 void AABCharacterPlayer::BeginPlay()
@@ -124,7 +128,25 @@ void AABCharacterPlayer::EquipWeapon(UABItemData* InItemData)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Magenta, TEXT("Equip Weapon"));
 
-	
+	UABWeaponItemData* WeaponItemData = Cast<UABWeaponItemData>(InItemData);
+
+	if (WeaponItemData)
+	{
+		if (WeaponItemData->WeaponMesh.IsPending())
+		{
+			WeaponItemData->WeaponMesh.LoadSynchronous();
+		}
+
+		if (WeaponMesh)
+		{
+			WeaponMesh->SetSkeletalMesh(WeaponItemData->WeaponMesh.Get());
+		}
+
+		if (StatComponent)
+		{
+			StatComponent->SetModifierStat(WeaponItemData->ModifierStat);
+		}
+	}
 }
 
 void AABCharacterPlayer::Look(const FInputActionValue& Value)

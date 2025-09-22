@@ -14,6 +14,8 @@ class ARENABATTLE_API AABItemBox : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AABItemBox();
+protected:
+	virtual void PostInitializeComponents() override;
 public:
 	UFUNCTION()
 	void OnItemBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -33,7 +35,7 @@ protected:
 	TObjectPtr<class UParticleSystemComponent> Effect;
 
 	UPROPERTY(EditAnywhere, Category = Item)
-	TObjectPtr<class UABItemData> ITemData;
+	TObjectPtr<class UABItemData> ItemData;
 
 public:
 

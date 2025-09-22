@@ -124,6 +124,7 @@ void AABCharacterBase::PostInitializeComponents()
 	StatComponent->OnHpZero.AddUObject(this, &AABCharacterBase::SetDead);
 	StatComponent->OnStatChanged.AddUObject(this, &AABCharacterBase::ApplyStat);
 
+	
 	if (HpBarComponent == nullptr)
 		return;
 

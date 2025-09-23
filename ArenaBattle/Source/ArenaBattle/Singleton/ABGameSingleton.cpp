@@ -19,6 +19,8 @@ UABGameSingleton::UABGameSingleton()
 				return *reinterpret_cast<FABCharacterStat*>(Value);
 			});
 	}
+
+	CharacterMaxLevel = CharacterStatTable.Num();
 }
 
 UABGameSingleton& UABGameSingleton::Get() 

@@ -17,7 +17,7 @@ AABItemBox::AABItemBox()
 	SetRootComponent(TriggerBox);
 	TriggerBox->SetBoxExtent(FVector(40.0f, 42.0f, 30.0f));
 	TriggerBox->SetCollisionProfileName(FName("ABTrigger"));
-	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &AABItemBox::OnItemBoxBeginOverlap);
+	
 
 	BoxMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoxMesh"));
 	BoxMesh->SetupAttachment(TriggerBox);
@@ -47,6 +47,11 @@ AABItemBox::AABItemBox()
 void AABItemBox::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
+	if (TriggerBox)
+	{
+		TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &AABItemBox::OnItemBoxBeginOverlap);
+	}
 
 	UAssetManager& Manager = UAssetManager::Get();
 

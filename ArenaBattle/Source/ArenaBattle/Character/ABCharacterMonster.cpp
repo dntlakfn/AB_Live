@@ -2,15 +2,26 @@
 
 
 #include "Character/ABCharacterMonster.h"
+#include "Engine/AssetManager.h"
+#include "AI/ABAIController.h"
 
 AABCharacterMonster::AABCharacterMonster()
 {
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshRef(TEXT("/Game/ABAssets/Warriors/Character/CompleteCharacters/SK_CharM_solid.SK_CharM_solid"));
-	
-	if (MeshRef.Succeeded())
-	{
-		GetMesh()->SetSkeletalMesh(MeshRef.Object);
-	}
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	AIControllerClass = AABAIController::StaticClass();
+
+	GetMesh()->SetHiddenInGame(true);
+}
+
+void AABCharacterMonster::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	ensure(MonsterMeshes.Num() > 0);
+
+	int32 RandomIndex = FMath::RandRange(0, MonsterMeshes.Num() - 1);
+	MonsterMeshHandle = UAssetManager::Get().GetStreamableManager().RequestAsyncLoad(MonsterMeshes[RandomIndex], FStreamableDelegate::CreateUObject(this, &AABCharacterMonster::MonsterMeshLoadCompleted));
+
 }
 
 void AABCharacterMonster::SetDead()
@@ -24,5 +35,21 @@ void AABCharacterMonster::SetDead()
 			Destroy();
 		}),
 		DeadEventDelayTime, false);
+
+}
+
+void AABCharacterMonster::MonsterMeshLoadCompleted()
+{
+	if (MonsterMeshHandle.IsValid())
+	{
+		USkeletalMesh* MonsterMesh = Cast<USkeletalMesh>(MonsterMeshHandle->GetLoadedAsset());
+		if (MonsterMesh)
+		{
+			GetMesh()->SetSkeletalMesh(MonsterMesh);
+			GetMesh()->SetHiddenInGame(false);
+		}
+	}
+
+	MonsterMeshHandle->ReleaseHandle();
 
 }

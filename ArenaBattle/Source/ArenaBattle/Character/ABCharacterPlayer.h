@@ -32,6 +32,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
+	virtual void SetDead() override;
+public:
 	// Item Section
 	virtual void TakeItem(class UABItemData* ItemData) override;
 	void DrinkPotion(UABItemData* InItemData);

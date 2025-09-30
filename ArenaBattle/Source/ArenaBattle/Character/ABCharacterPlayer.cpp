@@ -47,6 +47,7 @@ void AABCharacterPlayer::BeginPlay()
 	APlayerController* PlayerController = CastChecked<APlayerController>(GetController());
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 
+	EnableInput(PlayerController);
 	if(Subsystem)
 	{
 		Subsystem->AddMappingContext(IMCDefault, 0);
@@ -86,6 +87,17 @@ void AABCharacterPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	EnhancedInputComponent->BindAction(IAMove, ETriggerEvent::Triggered, this, &AABCharacterPlayer::Move);
 	EnhancedInputComponent->BindAction(IAAttack, ETriggerEvent::Triggered, this, &AABCharacterPlayer::Attack);
 
+}
+
+void AABCharacterPlayer::SetDead()
+{
+	Super::SetDead();
+	
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController)
+	{
+		DisableInput(PlayerController);
+	}
 }
 
 void AABCharacterPlayer::TakeItem(UABItemData* ItemData)

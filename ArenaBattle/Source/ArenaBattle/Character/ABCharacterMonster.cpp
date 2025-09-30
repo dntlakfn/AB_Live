@@ -24,9 +24,20 @@ void AABCharacterMonster::PostInitializeComponents()
 
 }
 
+void AABCharacterMonster::AttackByAI()
+{
+	ComboCommand();
+}
+
 void AABCharacterMonster::SetDead()
 {
 	Super::SetDead();
+
+	AABAIController* ABAIController = Cast<AABAIController>(GetController());
+	if (ABAIController)
+	{
+		ABAIController->StopAI();
+	}
 
 	FTimerHandle DeadTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(

@@ -5,13 +5,14 @@
 #include "CoreMinimal.h"
 #include "Character/ABCharacterBase.h"
 #include "Engine/StreamableManager.h"
+#include "Interface/ABAIInterface.h"
 #include "ABCharacterMonster.generated.h"
 
 /**
  * 
  */
 UCLASS(Config = Monster)
-class ARENABATTLE_API AABCharacterMonster : public AABCharacterBase
+class ARENABATTLE_API AABCharacterMonster : public AABCharacterBase, public IABAIInterface
 {
 	GENERATED_BODY()
 	
@@ -21,6 +22,8 @@ public :
 protected:
 	virtual void PostInitializeComponents() override;
 
+public:
+	virtual void AttackByAI() override;
 public:
 	virtual void SetDead() override;
 
